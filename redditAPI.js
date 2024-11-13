@@ -14,7 +14,10 @@ router.get('/api/science/top-posts', async (req, res) => {
 
         res.json(topPosts);
     } catch (error) {
-        console.error('Error fetching Reddit data', error);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('Error fetching Reddit data', error);
+        }       
+        
         res.status(500).send('Internal server error');
     }
 });
@@ -26,7 +29,10 @@ router.get('/api/science/top-users', async (req, res) => {
         const topUsers = await getTopUsers(accessToken);
         res.json(topUsers);
     } catch (error) {
-        console.error('Error fetching Reddit data', error);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('Error fetching Reddit data', error);
+        }    
+        
         res.status(500).send('Internal server error');
     }
 });

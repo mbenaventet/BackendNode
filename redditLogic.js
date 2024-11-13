@@ -18,53 +18,13 @@ async function getRedditOAuthToken() {
         });
         return response.data.access_token;
     } catch (error) {
-        console.error('Error fetching OAuth token:', error);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('Error fetching OAuth token:', error);
+        }
+        
         throw error;
     }
 }
-
-// Function to get top posts in the science subreddit with rate limit handling
-// async function getTopPosts(accessToken) {
-//     try {
-//         const response = await axios.get('https://oauth.reddit.com/r/science/top', {
-//             headers: {
-//                 'Authorization': `Bearer ${accessToken}`,
-//                 'User-Agent': 'RedditStatsApp/1.0',
-//             },
-//             params: {
-//                 t: 'day', // Top posts for the day
-//                 limit: 10, // Limit to top 10 posts
-//             },
-//         });
-
-//         // Extract rate limit information from the headers
-//         const rateLimitRemaining = response.headers['x-ratelimit-remaining'];
-//         const rateLimitReset = response.headers['x-ratelimit-reset'];
-
-//         if (process.env.NODE_ENV !== 'test') {
-//             // Log rate limit information
-//             console.log(`Rate limit remaining: ${rateLimitRemaining}, resets in: ${rateLimitReset} seconds`);
-//         }
-
-//         // Check if rate limit is exhausted
-//         if (rateLimitRemaining <= 0) {
-//             // Calculate the time to wait before making the next request
-//             const resetTime = (rateLimitReset - Math.floor(Date.now() / 1000)) * 1000; // Convert to milliseconds
-
-//             if (process.env.NODE_ENV !== 'test') {
-//                 console.log(`Rate limit exceeded. Waiting for ${resetTime / 1000} seconds...`);
-//             }
-//             // Wait for the rate limit to reset
-//             await new Promise(resolve => setTimeout(resolve, resetTime));
-//         }
-
-//         // Return the top posts
-//         return response.data.data.children;
-//     } catch (error) {
-//         console.error('Error fetching top posts:', error);
-//         throw error;
-//     }
-// }
 
 async function getTopPosts(accessToken) {
     try {
@@ -103,7 +63,10 @@ async function getTopPosts(accessToken) {
             throw new Error("Unexpected response structure: 'children' data missing");
         }
     } catch (error) {
-        console.error('Error fetching top posts:', error);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('Error fetching top posts:', error);
+        }       
+        
         throw error;
     }
 }
@@ -141,7 +104,9 @@ async function getTopUsers(accessToken) {
 
         return sortedUsers.slice(0, 10); // Return top 10 users with the most posts
     } catch (error) {
-        console.error('Error fetching top users:', error);
+        if (process.env.NODE_ENV !== 'test') {
+            console.error('Error fetching top users:', error);
+        }        
         throw error;
     }
 }
