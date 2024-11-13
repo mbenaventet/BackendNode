@@ -7,8 +7,10 @@ const initializeWebSocketServer = () => {
     const wss = new WebSocket.Server({ port: WS_PORT });
 
     wss.on('connection', (ws) => {
-        console.log('Client connected to WebSocket server');
-
+        if (process.env.NODE_ENV !== 'test') {
+            console.log('Client connected to WebSocket server');
+        }
+        
         // Define the function to fetch and send data
         const fetchDataAndSend = async () => {
             try {
@@ -18,7 +20,10 @@ const initializeWebSocketServer = () => {
 
                 const data = { topPosts: topPosts || [], topUsers: topUsers || [] };
                 ws.send(JSON.stringify(data));
-                console.log("Sent data to client:", data);
+                
+                if (process.env.NODE_ENV !== 'test') {
+                    console.log("Sent data to client:", data);
+                }
             } catch (error) {
                 console.error("Error fetching or sending data:", error);
             }
@@ -29,7 +34,10 @@ const initializeWebSocketServer = () => {
         const intervalId = setInterval(fetchDataAndSend, 10000);
 
         ws.on('close', () => {
-            console.log('Client disconnected');
+                
+            if (process.env.NODE_ENV !== 'test') {
+                console.log('Client disconnected');
+            }            
             clearInterval(intervalId);
         });
     });
